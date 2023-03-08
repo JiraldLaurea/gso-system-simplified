@@ -5,11 +5,6 @@ const router = express.Router();
 const { Announcement } = require("../models");
 const { AnnouncementComment } = require("../models");
 
-// router.get("/", async (req, res) => {
-//     const barangays = await Barangay.findAll();
-//     res.json(barangays);
-// });
-
 const getAnnouncements = async (req, res) => {
     const announcements = await Announcement.findAll({
         order: [["createdAt", "DESC"]],
