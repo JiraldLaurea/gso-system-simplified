@@ -67,7 +67,7 @@ function encode() {
                                             <li
                                                 onClick={() => {
                                                     router.push(
-                                                        "/encode/barangayProfile"
+                                                        "/encode/swmPlan"
                                                     );
                                                     setIsDropdownMenuOpen(
                                                         false
@@ -78,7 +78,7 @@ function encode() {
                                                     href="#"
                                                     className="block px-3 py-2 hover:bg-gray-100"
                                                 >
-                                                    Barangay profile
+                                                    SWM Plan
                                                 </a>
                                             </li>
                                             <li

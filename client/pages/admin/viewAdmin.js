@@ -16,12 +16,6 @@ function adminView() {
             <div className="p-4 md:p-8">
                 <div className="flex flex-col gap-2 md:grid md:grid-cols-4">
                     <RequirementsButton
-                        path="/admin/viewAdmin/barangayProfile"
-                        requirementName="Barangay profile"
-                        isAdmin
-                        iconStyle="mingcute:profile-line"
-                    />
-                    <RequirementsButton
                         path="/admin/viewAdmin/sketch"
                         requirementName="Route sketch"
                         isAdmin

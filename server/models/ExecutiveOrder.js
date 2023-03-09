@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
+            executiveOrderNo: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             dateIssued: {
                 type: DataTypes.STRING,
                 allowNull: false,

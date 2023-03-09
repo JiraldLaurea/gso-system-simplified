@@ -14,11 +14,6 @@ const { Submission } = require("../models");
 
 const Op = Sequelize.Op;
 
-// const getShortenedBarangayProfile = async (req, res) => {
-//     const shortenedBarangayProfile = await ShortenedBarangayProfile.findAll();
-//     return res.json(shortenedBarangayProfile);
-// };
-
 const getAllShortenedBarangayProfile = async (req, res) => {
     const user = res.locals.user;
 
