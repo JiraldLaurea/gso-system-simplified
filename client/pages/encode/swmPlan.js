@@ -5,6 +5,13 @@ import React, { useEffect, useRef, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import useSWR from "swr";
 import { useAuthDispatch } from "../../context/auth";
+import {
+    getDownloadURL,
+    ref,
+    uploadBytes,
+    uploadString,
+} from "firebase/storage";
+import { storage } from "../../firebase";
 
 function barangayProfile({ savedData }) {
     const router = useRouter();
@@ -14,12 +21,13 @@ function barangayProfile({ savedData }) {
     const [dropdownMenuValueDistrict, setDropdownMenuValueDistrict] =
         useState("District");
     const [barangayId, setBarangayId] = useState(null);
+    const [userId, setUserId] = useState(null);
     const [isSaved, setIsSaved] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useAuthDispatch();
     const date = new Date();
     const [yearSubmitted, setYearSubmitted] = useState(date.getFullYear());
-    const [totalPopulation, setTotalPopulation] = useState(0);
+    const [populationCount, setPopulationCount] = useState(0);
     const formRef = useRef();
     const inputFileRefSketch = useRef();
     const inputFileRefPrograms = useRef();
@@ -82,66 +90,392 @@ function barangayProfile({ savedData }) {
         "http://localhost:3001/barangay/getAllBarangayEncode"
     );
 
-    console.log("ALL BARANGAYS ENCODE", barangaysEncode);
+    const resetInputs = () => {
+        setImageNameSketch([]);
+        setImageNamePrograms([]);
+        setImageNameFundingReq([]);
+        setImageNameMoa([]);
+        setImageNameJunkshop([]);
+        setImageNameBusinessPermit([]);
+        setImageNameExecutiveOrder([]);
+        setImageNameBarangayOrdinance([]);
 
-    const handleClick = async () => {
-        const data = { barangayId: barangayId };
+        setImageSrcSketch([]);
+        setImageSrcPrograms([]);
+        setImageSrcFundingReq([]);
+        setImageSrcMoa([]);
+        setImageSrcJunkshop([]);
+        setImageSrcBusinessPermit([]);
+        setImageSrcExecutiveOrder([]);
+        setImageSrcBarangayOrdinance([]);
 
-        await Axios.post(
-            "http://localhost:3001/submission/allBrgyProfilePages",
-            data
-        ).then((res) => {
-            if (res.data) {
-                setIsSaved(true);
-            } else {
-                setIsSaved(false);
-            }
-        });
+        setCollectionSchedule("");
+        setDateOfCreation("");
+        setJunkshopName("");
+        setDateIssuedBusinessPermit("");
+        setExecutiveOrderNo("");
+        setDateIssuedExecutiveOrder("");
+        setBarangayOrdinanceNo("");
+
+        alert("Document successfully encoded");
+
+        setIsLoading(false);
+        formRef.current.reset();
     };
 
-    useEffect(() => {
-        if (barangayId != null) {
-            handleClick();
+    const SubmitSWMPlan = async () => {
+        setIsLoading(true);
+        const isEncoded = await Axios.post(
+            "http://localhost:3001/submission/getEncodedSWMPlan",
+            { barangayId: barangayId, yearSubmitted: yearSubmitted }
+        ).then((res) => res.data);
+
+        if (isEncoded == true) {
+            setIsLoading(false);
+            return alert(
+                "You have already encoded a document from this barangay."
+            );
         }
-    }, [barangayId]);
 
-    const postSelectedBarangay = async (action) => {
-        const actionData = {
-            action: action,
-            barangayId: barangayId,
-        };
-        const data = {
-            barangayId: barangayId,
-            selectedBarangay: dropdownMenuValueBarangay,
-            selectedDistrict: dropdownMenuValueDistrict,
-        };
+        if (
+            collectionSchedule != "" &&
+            dateOfCreation != "" &&
+            junkshopName != "" &&
+            dateIssuedBusinessPermit != "" &&
+            executiveOrderNo != "" &&
+            dateIssuedExecutiveOrder != "" &&
+            barangayOrdinanceNo != "" &&
+            imageSrcSketch.length != 0 &&
+            imageSrcPrograms.length != 0 &&
+            imageSrcFundingReq.length != 0 &&
+            imageSrcMoa.length != 0 &&
+            imageSrcJunkshop.length != 0 &&
+            imageSrcBusinessPermit.length != 0 &&
+            imageSrcExecutiveOrder.length != 0 &&
+            imageSrcBarangayOrdinance.length != 0
+        ) {
+            imageSrcSketch.map(async (file, index) => {
+                const extension = file.name.substring(
+                    file.name.lastIndexOf(".") + 1
+                );
 
-        await Axios.post(
-            "http://localhost:3001/barangay/postSelectedBarangay",
-            data
-        );
+                const formData = new FormData();
+                formData.append("file", file);
 
-        await Axios.put(
-            "http://localhost:3001/submission/updateAction",
-            actionData
-        );
+                const documentName = `Sketch${dropdownMenuValueBarangay}${dropdownMenuValueDistrict}${yearSubmitted}-${
+                    index + 1
+                }.${extension}`;
 
-        if (action == "CreateNewDocument") {
-            await Axios.post(
-                "http://localhost:3001/submission/createSubmissionBarangayProfilePages"
-            ).then(async () => {
-                router.push("/encode/barangayProfile/template");
+                const fileRef = ref(
+                    storage,
+                    `submission/sketch/${documentName}`
+                );
+
+                await uploadBytes(fileRef, file);
+
+                const url = await getDownloadURL(fileRef);
+
+                const postData = {
+                    yearSubmitted: yearSubmitted,
+                    collectionSchedule: collectionSchedule,
+                    documentName: documentName,
+                    sketchUrl: url,
+                    barangayName: dropdownMenuValueBarangay,
+                    districtName: dropdownMenuValueDistrict,
+                    barangayId: barangayId,
+                    userId: userId,
+                };
+
+                await Axios.post(
+                    "http://localhost:3001/sketch/createSketch",
+                    postData
+                );
             });
-        }
 
-        if (action == "LoadDocument") {
-            router.push("/encode/barangayProfile/template");
+            imageSrcPrograms.map(async (file, index) => {
+                const extension = file.name.substring(
+                    file.name.lastIndexOf(".") + 1
+                );
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const documentName = `Programs${dropdownMenuValueBarangay}${dropdownMenuValueDistrict}${yearSubmitted}-${
+                    index + 1
+                }.${extension}`;
+
+                const fileRef = ref(
+                    storage,
+                    `submission/programs/${documentName}`
+                );
+
+                await uploadBytes(fileRef, file);
+
+                const url = await getDownloadURL(fileRef);
+
+                const postData = {
+                    yearSubmitted: yearSubmitted,
+                    documentName: documentName,
+                    programsUrl: url,
+                    barangayName: dropdownMenuValueBarangay,
+                    districtName: dropdownMenuValueDistrict,
+                    barangayId: barangayId,
+                    userId: userId,
+                };
+
+                await Axios.post(
+                    "http://localhost:3001/programs/createPrograms",
+                    postData
+                );
+            });
+
+            imageSrcFundingReq.map(async (file, index) => {
+                const extension = file.name.substring(
+                    file.name.lastIndexOf(".") + 1
+                );
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const documentName = `FundingReq${dropdownMenuValueBarangay}${dropdownMenuValueDistrict}${yearSubmitted}-${
+                    index + 1
+                }.${extension}`;
+
+                const fileRef = ref(
+                    storage,
+                    `submission/fundingReq/${documentName}`
+                );
+
+                await uploadBytes(fileRef, file);
+
+                const url = await getDownloadURL(fileRef);
+
+                const postData = {
+                    yearSubmitted: yearSubmitted,
+                    documentName: documentName,
+                    fundingReqUrl: url,
+                    barangayName: dropdownMenuValueBarangay,
+                    districtName: dropdownMenuValueDistrict,
+                    barangayId: barangayId,
+                    userId: userId,
+                };
+                await Axios.post(
+                    "http://localhost:3001/fundingReq/createFundingReq",
+                    postData
+                );
+            });
+
+            imageSrcMoa.map(async (file, index) => {
+                const extension = file.name.substring(
+                    file.name.lastIndexOf(".") + 1
+                );
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const documentName = `Moa${dropdownMenuValueBarangay}${dropdownMenuValueDistrict}${yearSubmitted}-${
+                    index + 1
+                }.${extension}`;
+
+                const fileRef = ref(
+                    storage,
+                    `submission/memorandumOfAgreement/${documentName}`
+                );
+
+                await uploadBytes(fileRef, file);
+
+                const url = await getDownloadURL(fileRef);
+
+                const postData = {
+                    yearSubmitted: yearSubmitted,
+                    dateOfCreation: dateOfCreation,
+                    documentName: documentName,
+                    memorandumOfAgreementUrl: url,
+                    barangayName: dropdownMenuValueBarangay,
+                    districtName: dropdownMenuValueDistrict,
+                    barangayId: barangayId,
+                    userId: userId,
+                };
+                await Axios.post(
+                    "http://localhost:3001/moa/createMoa",
+                    postData
+                );
+            });
+
+            imageSrcJunkshop.map(async (file, index) => {
+                const extension = file.name.substring(
+                    file.name.lastIndexOf(".") + 1
+                );
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const documentName = `Junkshop${dropdownMenuValueBarangay}${dropdownMenuValueDistrict}${yearSubmitted}-${
+                    index + 1
+                }.${extension}`;
+
+                const fileRef = ref(
+                    storage,
+                    `submission/junkshop/${documentName}`
+                );
+
+                await uploadBytes(fileRef, file);
+
+                const url = await getDownloadURL(fileRef);
+
+                const postData = {
+                    yearSubmitted: yearSubmitted,
+                    junkshopName: junkshopName,
+                    documentName: documentName,
+                    junkshopUrl: url,
+                    barangayName: dropdownMenuValueBarangay,
+                    districtName: dropdownMenuValueDistrict,
+                    barangayId: barangayId,
+                    userId: userId,
+                };
+                await Axios.post(
+                    "http://localhost:3001/junkshop/createJunkshop",
+                    postData
+                );
+            });
+
+            imageSrcBusinessPermit.map(async (file, index) => {
+                const extension = file.name.substring(
+                    file.name.lastIndexOf(".") + 1
+                );
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const documentName = `BusinessPermit${dropdownMenuValueBarangay}${dropdownMenuValueDistrict}${yearSubmitted}-${
+                    index + 1
+                }.${extension}`;
+
+                const fileRef = ref(
+                    storage,
+                    `submission/businessPermit/${documentName}`
+                );
+
+                await uploadBytes(fileRef, file);
+
+                const url = await getDownloadURL(fileRef);
+
+                const postData = {
+                    yearSubmitted: yearSubmitted,
+                    dateIssued: dateIssuedBusinessPermit,
+                    documentName: documentName,
+                    businessPermitUrl: url,
+                    barangayName: dropdownMenuValueBarangay,
+                    districtName: dropdownMenuValueDistrict,
+                    barangayId: barangayId,
+                    userId: userId,
+                };
+                await Axios.post(
+                    "http://localhost:3001/businessPermit/createBusinessPermit",
+                    postData
+                );
+            });
+
+            imageSrcExecutiveOrder.map(async (file, index) => {
+                const extension = file.name.substring(
+                    file.name.lastIndexOf(".") + 1
+                );
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const documentName = `ExecutiveOrder${dropdownMenuValueBarangay}${dropdownMenuValueDistrict}${yearSubmitted}-${
+                    index + 1
+                }.${extension}`;
+
+                const fileRef = ref(
+                    storage,
+                    `submission/executiveOrder/${documentName}`
+                );
+
+                await uploadBytes(fileRef, file);
+
+                const url = await getDownloadURL(fileRef);
+
+                const postData = {
+                    yearSubmitted: yearSubmitted,
+                    executiveOrderNo: executiveOrderNo,
+                    dateIssued: dateIssuedExecutiveOrder,
+                    documentName: documentName,
+                    executiveOrderUrl: url,
+                    barangayName: dropdownMenuValueBarangay,
+                    districtName: dropdownMenuValueDistrict,
+                    barangayId: barangayId,
+                    userId: userId,
+                };
+                await Axios.post(
+                    "http://localhost:3001/executiveOrder/createExecutiveOrder",
+                    postData
+                );
+            });
+
+            imageSrcBarangayOrdinance.map(async (file, index) => {
+                const extension = file.name.substring(
+                    file.name.lastIndexOf(".") + 1
+                );
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const documentName = `BarangayOrdinance${dropdownMenuValueBarangay}${dropdownMenuValueDistrict}${yearSubmitted}-${
+                    index + 1
+                }.${extension}`;
+
+                const fileRef = ref(
+                    storage,
+                    `submission/barangayOrdinance/${documentName}`
+                );
+
+                await uploadBytes(fileRef, file);
+
+                const url = await getDownloadURL(fileRef);
+
+                const postData = {
+                    yearSubmitted: yearSubmitted,
+                    documentName: documentName,
+                    barangayOrdinanceNo: barangayOrdinanceNo,
+                    barangayOrdinanceUrl: url,
+                    barangayName: dropdownMenuValueBarangay,
+                    districtName: dropdownMenuValueDistrict,
+                    barangayId: barangayId,
+                    userId: userId,
+                };
+                await Axios.post(
+                    "http://localhost:3001/barangayOrdinance/createBarangayOrdinance",
+                    postData
+                );
+            });
+
+            const data = {
+                barangayName: dropdownMenuValueBarangay,
+                districtName: dropdownMenuValueDistrict,
+                populationCount: populationCount,
+                userId: userId,
+                barangayId: barangayId,
+                yearSubmitted: yearSubmitted,
+            };
+
+            await Axios.post(
+                "http://localhost:3001/submission/submitSWMPlan",
+                data
+            );
+
+            resetInputs();
+        } else {
+            setIsLoading(false);
+            alert("Please fill in all the attachments.");
         }
     };
 
     return (
         <div className="flex flex-col w-full">
             <div className="p-4 md:p-8">
+                {/* <button onClick={test}>TEST</button> */}
                 <div>
                     <div className="relative flex space-x-4">
                         <ClickAwayListener
@@ -206,6 +540,9 @@ function barangayProfile({ savedData }) {
                                                                 setBarangayId(
                                                                     barangayEncode.id
                                                                 );
+                                                                setUserId(
+                                                                    barangayEncode.userId
+                                                                );
                                                                 setIsDropdownMenuOpen(
                                                                     false
                                                                 );
@@ -235,12 +572,12 @@ function barangayProfile({ savedData }) {
 
                         <div>
                             <p className="mb-1 text-sm text-gray-600">
-                                Total population
+                                population count
                             </p>
                             <input
-                                value={totalPopulation}
+                                value={populationCount}
                                 onChange={(e) =>
-                                    setTotalPopulation(e.target.value)
+                                    setPopulationCount(e.target.value)
                                 }
                                 type="number"
                                 className="px-2 py-2 text-left border w-28 focus:outline-none"
@@ -671,15 +1008,15 @@ function barangayProfile({ savedData }) {
                     </form>
                     <button
                         onClick={() => {
-                            if (!loading) {
-                                submit();
+                            if (!isLoading) {
+                                SubmitSWMPlan();
                             }
                         }}
                         className={`px-3 hover:bg-blue-600 flex items-center justify-center w-36 transition-colors py-2 mt-8 mb-4 text-white bg-blue-500 rounded-sm ${
-                            loading && "cursor-not-allowed"
+                            isLoading && "cursor-not-allowed"
                         } `}
                     >
-                        {!loading ? (
+                        {!isLoading ? (
                             <>
                                 <Icon
                                     icon="fluent:document-arrow-up-20-filled"

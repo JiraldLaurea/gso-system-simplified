@@ -137,28 +137,32 @@ const getBusinessPermitYear = async (req, res) => {
 };
 
 const createBusinessPermit = async (req, res) => {
-    const { yearSubmitted, dateIssued, documentName, businessPermitUrl } =
-        req.body;
-    const user = res.locals.user;
-
-    const selectedBarangay = await ActionSelectedBarangay.findOne({
-        where: { userId: user.id },
-    });
+    const {
+        yearSubmitted,
+        dateIssued,
+        documentName,
+        barangayName,
+        districtName,
+        barangayId,
+        userId,
+        businessPermitUrl,
+    } = req.body;
 
     const businessPermit = await BusinessPermit.create({
         documentName: documentName,
         yearSubmitted: yearSubmitted,
         dateIssued: dateIssued,
-        userId: user.id,
-        barangayId: selectedBarangay.barangayId,
-        barangayName: selectedBarangay.selectedBarangay,
-        districtName: selectedBarangay.selectedDistrict,
+        userId: userId,
+        barangayId: barangayId,
+        barangayName: barangayName,
+        districtName: districtName,
         businessPermitUrl: businessPermitUrl,
     });
 
     await Submission.findOne({
         where: {
-            barangayId: selectedBarangay.barangayId,
+            barangayId: barangayId,
+            yearSubmitted: yearSubmitted,
         },
         order: [["createdAt", "DESC"]],
     }).then((data) => {

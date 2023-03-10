@@ -88,6 +88,47 @@ const getEncodedDocument = async (req, res) => {
     res.json(encodedDocument);
 };
 
+const getEncodedSWMPlan = async (req, res) => {
+    const { barangayId, yearSubmitted } = req.body;
+
+    const swmPlan = await Submission.findOne({
+        where: {
+            barangayId: barangayId,
+            yearSubmitted: yearSubmitted,
+        },
+    });
+
+    if (swmPlan) {
+        res.json(true);
+    } else {
+        res.json(false);
+    }
+};
+
+const submitSWMPlan = async (req, res) => {
+    const {
+        barangayName,
+        districtName,
+        populationCount,
+        userId,
+        barangayId,
+        yearSubmitted,
+    } = req.body;
+
+    const totalWaste = (populationCount * 0.71).toFixed(2);
+
+    await Submission.create({
+        barangayName: barangayName,
+        districtName: districtName,
+        userId: userId,
+        barangayId: barangayId,
+        populationCount: populationCount,
+        yearSubmitted: yearSubmitted,
+        totalWaste: totalWaste,
+        barangayProfile: true,
+    });
+};
+
 const getEncodedBarangayProfile = async (req, res) => {
     const user = res.locals.user;
 
@@ -219,12 +260,8 @@ const getAllEncodedBarangayProfile = async (req, res) => {
 
 router.get("/submissions", validateUser, validate, getSubmissions);
 router.get("/getEncodedDocument", validateUser, validate, getEncodedDocument);
-router.get(
-    "/getEncodedBarangayProfile",
-    validateUser,
-    validate,
-    getEncodedBarangayProfile
-);
+router.post("/getEncodedSWMPlan", validateUser, validate, getEncodedSWMPlan);
+router.post("/submitSWMPlan", validateUser, validate, submitSWMPlan);
 router.get("/getEncodedSketch", validateUser, validate, getEncodedSketch);
 router.get(
     "/getEncodedProgramsDoc",

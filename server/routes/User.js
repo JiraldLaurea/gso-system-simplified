@@ -64,13 +64,13 @@ router.post("/", async (req, res) => {
             { where: { id: barangay.id } }
         );
 
-        await Submission.create({
-            isShortened: false,
-            barangayId: barangay.id,
-            barangayName: barangayName,
-            districtName: districtName,
-            userId: user.id,
-        });
+        // await Submission.create({
+        //     isShortened: false,
+        //     barangayId: barangay.id,
+        //     barangayName: barangayName,
+        //     districtName: districtName,
+        //     userId: user.id,
+        // });
 
         // await SubmissionBarangayProfilePage1.create({
         //     barangayId: barangay.id,

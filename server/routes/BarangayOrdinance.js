@@ -137,31 +137,38 @@ const getBarangayOrdinanceYear = async (req, res) => {
 };
 
 const createBarangayOrdinance = async (req, res) => {
-    const { yearSubmitted, documentName, barangayOrdinanceUrl } = req.body;
-    const user = res.locals.user;
-
-    const selectedBarangay = await ActionSelectedBarangay.findOne({
-        where: { userId: user.id },
-    });
+    const {
+        yearSubmitted,
+        documentName,
+        barangayOrdinanceNo,
+        barangayName,
+        districtName,
+        barangayId,
+        userId,
+        barangayOrdinanceUrl,
+    } = req.body;
 
     const barangayOrdinance = await BarangayOrdinance.create({
         documentName: documentName,
+        barangayOrdinanceNo: barangayOrdinanceNo,
         yearSubmitted: yearSubmitted,
-        userId: user.id,
-        barangayId: selectedBarangay.barangayId,
-        barangayName: selectedBarangay.selectedBarangay,
-        districtName: selectedBarangay.selectedDistrict,
+        userId: userId,
+        barangayId: barangayId,
+        barangayName: barangayName,
+        districtName: districtName,
         barangayOrdinanceUrl: barangayOrdinanceUrl,
     });
 
     await Submission.findOne({
         where: {
-            barangayId: selectedBarangay.barangayId,
+            barangayId: barangayId,
+            yearSubmitted: yearSubmitted,
         },
         order: [["createdAt", "DESC"]],
     }).then((data) => {
         data.update({
             barangayOrdinance: true,
+            barangayOrdinanceNo: barangayOrdinanceNo,
         });
     });
 

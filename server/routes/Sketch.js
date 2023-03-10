@@ -137,28 +137,32 @@ const getSketchYear = async (req, res) => {
 };
 
 const createSketch = async (req, res) => {
-    const { yearSubmitted, collectionSchedule, documentName, sketchUrl } =
-        req.body;
-    const user = res.locals.user;
-
-    const selectedBarangay = await ActionSelectedBarangay.findOne({
-        where: { userId: user.id },
-    });
+    const {
+        yearSubmitted,
+        collectionSchedule,
+        documentName,
+        barangayName,
+        districtName,
+        barangayId,
+        userId,
+        sketchUrl,
+    } = req.body;
 
     const sketch = await Sketch.create({
         documentName: documentName,
         yearSubmitted: yearSubmitted,
         collectionSchedule: collectionSchedule,
-        userId: user.id,
-        barangayId: selectedBarangay.barangayId,
-        barangayName: selectedBarangay.selectedBarangay,
-        districtName: selectedBarangay.selectedDistrict,
+        userId: userId,
+        barangayId: barangayId,
+        barangayName: barangayName,
+        districtName: districtName,
         sketchUrl: sketchUrl,
     });
 
     await Submission.findOne({
         where: {
-            barangayId: selectedBarangay.barangayId,
+            barangayId: barangayId,
+            yearSubmitted: yearSubmitted,
         },
         order: [["createdAt", "DESC"]],
     }).then((data) => {

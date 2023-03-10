@@ -137,26 +137,30 @@ const getFundingReqYear = async (req, res) => {
 };
 
 const createFundingReq = async (req, res) => {
-    const { yearSubmitted, documentName, fundingReqUrl } = req.body;
-    const user = res.locals.user;
-
-    const selectedBarangay = await ActionSelectedBarangay.findOne({
-        where: { userId: user.id },
-    });
+    const {
+        yearSubmitted,
+        documentName,
+        barangayName,
+        districtName,
+        barangayId,
+        userId,
+        fundingReqUrl,
+    } = req.body;
 
     const fundingReq = await FundingReq.create({
         documentName: documentName,
         yearSubmitted: yearSubmitted,
-        userId: user.id,
-        barangayId: selectedBarangay.barangayId,
-        barangayName: selectedBarangay.selectedBarangay,
-        districtName: selectedBarangay.selectedDistrict,
+        userId: userId,
+        barangayId: barangayId,
+        barangayName: barangayName,
+        districtName: districtName,
         fundingReqUrl: fundingReqUrl,
     });
 
     await Submission.findOne({
         where: {
-            barangayId: selectedBarangay.barangayId,
+            barangayId: barangayId,
+            yearSubmitted: yearSubmitted,
         },
         order: [["createdAt", "DESC"]],
     }).then((data) => {

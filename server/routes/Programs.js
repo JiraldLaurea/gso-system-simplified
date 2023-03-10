@@ -171,26 +171,30 @@ const getProgramsYear = async (req, res) => {
 };
 
 const createPrograms = async (req, res) => {
-    const { yearSubmitted, documentName, programsUrl } = req.body;
-    const user = res.locals.user;
-
-    const selectedBarangay = await ActionSelectedBarangay.findOne({
-        where: { userId: user.id },
-    });
+    const {
+        yearSubmitted,
+        documentName,
+        barangayName,
+        districtName,
+        barangayId,
+        userId,
+        programsUrl,
+    } = req.body;
 
     const programs = await Programs.create({
         documentName: documentName,
         yearSubmitted: yearSubmitted,
-        userId: user.id,
-        barangayId: selectedBarangay.barangayId,
-        barangayName: selectedBarangay.selectedBarangay,
-        districtName: selectedBarangay.selectedDistrict,
+        userId: userId,
+        barangayId: barangayId,
+        barangayName: barangayName,
+        districtName: districtName,
         programsUrl: programsUrl,
     });
 
     await Submission.findOne({
         where: {
-            barangayId: selectedBarangay.barangayId,
+            barangayId: barangayId,
+            yearSubmitted: yearSubmitted,
         },
         order: [["createdAt", "DESC"]],
     }).then((data) => {

@@ -141,28 +141,28 @@ const createMoa = async (req, res) => {
         yearSubmitted,
         dateOfCreation,
         documentName,
+        barangayName,
+        districtName,
+        barangayId,
+        userId,
         memorandumOfAgreementUrl,
     } = req.body;
-    const user = res.locals.user;
-
-    const selectedBarangay = await ActionSelectedBarangay.findOne({
-        where: { userId: user.id },
-    });
 
     const moa = await MemorandumOfAgreement.create({
         documentName: documentName,
         yearSubmitted: yearSubmitted,
         dateOfCreation: dateOfCreation,
-        userId: user.id,
-        barangayId: selectedBarangay.barangayId,
-        barangayName: selectedBarangay.selectedBarangay,
-        districtName: selectedBarangay.selectedDistrict,
+        userId: userId,
+        barangayId: barangayId,
+        barangayName: barangayName,
+        districtName: districtName,
         memorandumOfAgreementUrl: memorandumOfAgreementUrl,
     });
 
     await Submission.findOne({
         where: {
-            barangayId: selectedBarangay.barangayId,
+            barangayId: barangayId,
+            yearSubmitted: yearSubmitted,
         },
         order: [["createdAt", "DESC"]],
     }).then((data) => {

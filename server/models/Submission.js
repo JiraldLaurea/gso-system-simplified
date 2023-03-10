@@ -2,13 +2,9 @@ module.exports = (sequelize, DataTypes) => {
     const Submission = sequelize.define(
         "Submission",
         {
-            documentName: {
-                type: DataTypes.STRING,
+            populationCount: {
+                type: DataTypes.INTEGER,
                 allowNull: true,
-            },
-            isShortened: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
             },
             yearSubmitted: {
                 type: DataTypes.INTEGER,
@@ -74,6 +70,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 allowNull: true,
             },
+            executiveOrderNo: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             executiveOrderDate: {
                 type: DataTypes.STRING,
                 allowNull: true,
@@ -82,17 +82,13 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 allowNull: true,
             },
-            populationCount: {
-                type: DataTypes.INTEGER,
+            barangayOrdinanceNo: {
+                type: DataTypes.STRING,
                 allowNull: true,
             },
             userId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-            },
-            submissionBarangayProfileUrl: {
-                type: DataTypes.TEXT,
-                allowNull: true,
             },
         },
         {

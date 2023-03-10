@@ -137,33 +137,40 @@ const getExecutiveOrderYear = async (req, res) => {
 };
 
 const createExecutiveOrder = async (req, res) => {
-    const { yearSubmitted, dateIssued, documentName, executiveOrderUrl } =
-        req.body;
-    const user = res.locals.user;
-
-    const selectedBarangay = await ActionSelectedBarangay.findOne({
-        where: { userId: user.id },
-    });
+    const {
+        yearSubmitted,
+        executiveOrderNo,
+        dateIssued,
+        documentName,
+        barangayName,
+        districtName,
+        barangayId,
+        userId,
+        executiveOrderUrl,
+    } = req.body;
 
     const executiveOrder = await ExecutiveOrder.create({
         documentName: documentName,
+        executiveOrderNo: executiveOrderNo,
         yearSubmitted: yearSubmitted,
         dateIssued: dateIssued,
-        userId: user.id,
-        barangayId: selectedBarangay.barangayId,
-        barangayName: selectedBarangay.selectedBarangay,
-        districtName: selectedBarangay.selectedDistrict,
+        userId: userId,
+        barangayId: barangayId,
+        barangayName: barangayName,
+        districtName: districtName,
         executiveOrderUrl: executiveOrderUrl,
     });
 
     await Submission.findOne({
         where: {
-            barangayId: selectedBarangay.barangayId,
+            barangayId: barangayId,
+            yearSubmitted: yearSubmitted,
         },
         order: [["createdAt", "DESC"]],
     }).then((data) => {
         data.update({
             executiveOrder: true,
+            executiveOrderNo: executiveOrderNo,
             executiveOrderDate: dateIssued,
         });
     });
