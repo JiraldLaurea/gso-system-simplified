@@ -85,9 +85,13 @@ function viewAll() {
         dispatch("CHANGE_PATH", "/admin/viewAdmin");
     }, []);
 
+    console.log(barangayId);
+
     const { data: barangaysEncode } = useSWR(
-        "http://localhost:3001/sketch/getAllUpdatedSketch"
+        "http://localhost:3001/barangay/getAllBarangay"
     );
+
+    console.log("BRGY ENCODE", barangaysEncode);
 
     const displayYearSubmitted = async () => {
         const data = {
@@ -98,43 +102,8 @@ function viewAll() {
             "http://localhost:3001/shortenedSubmission/getAllSubmission",
             data
         ).then((res) => {
+            console.log("DISPLAY YEAR SUBMITTED", res);
             setBarangayYears(res.data);
-        });
-    };
-
-    const editSelectedBarangay = async () => {
-        const data = {
-            barangayId: barangayId,
-            selectedBarangay: dropdownMenuValueBarangay,
-            selectedDistrict: dropdownMenuValueDistrict,
-            yearSubmitted: yearOfSubmission,
-        };
-
-        const actionData = {
-            action: "EditSubmission",
-            barangayId: barangayId,
-        };
-
-        await Axios.post(
-            "http://localhost:3001/barangay/postSelectedBarangayWithYearSubmitted",
-            data
-        );
-
-        await Axios.put(
-            "http://localhost:3001/submission/updateAction",
-            actionData
-        );
-
-        await Axios.post(
-            "http://localhost:3001/shortenedSubmission/getSubmissionWithYearSubmitted",
-            { barangayId: barangayId, yearSubmitted: yearOfSubmission }
-        ).then((res) => {
-            const isShortened = res.data.isShortened;
-            if (isShortened) {
-                router.push("/admin/viewAdmin/viewAll/template");
-            } else {
-                router.push("/admin/viewAdmin/viewAll/templateEncoded");
-            }
         });
     };
 
@@ -144,24 +113,14 @@ function viewAll() {
         }
     }, [barangayId]);
 
+    // console.log("BRGY ID", barangayId);
+    // console.log("YEAR", yearOfSubmission);
+
     const view = async (e) => {
         const data = {
             barangayId: barangayId,
             yearSubmitted: yearOfSubmission,
         };
-
-        await Axios.post(
-            "http://localhost:3001/shortenedSubmission/getUpdatedBarangayProfileUrl2",
-            data
-        ).then((res) => {
-            if (res.data) {
-                setSubmissionBarangayProfileUrl(
-                    res.data.submissionBarangayProfileUrl
-                );
-            } else {
-                setSubmissionBarangayProfileUrl(null);
-            }
-        });
 
         await Axios.post(
             "http://localhost:3001/sketch/getUpdatedSketch",
@@ -249,45 +208,6 @@ function viewAll() {
                 setImageListBarangayOrdinance([]);
             }
         });
-    };
-
-    const downloadBarangayProfile = async () => {
-        if (!loadingDownload) {
-            setLoadingDownload(true);
-
-            const data = {
-                barangayId: barangayId,
-                selectedBarangay: dropdownMenuValueBarangay,
-                selectedDistrict: dropdownMenuValueDistrict,
-            };
-
-            const dataYearOfSubmission = {
-                yearOfSubmission: yearOfSubmission,
-            };
-
-            await Axios.post(
-                "http://localhost:3001/barangay/postSelectedBarangay",
-                data
-            );
-
-            await Axios.post(
-                "http://localhost:3001/shortenedSubmission/getUpdatedBarangayProfileUrl",
-                dataYearOfSubmission
-            ).then((res) => {
-                const documentName = res.data.documentName;
-                Axios({
-                    url: "http://localhost:3001/download",
-                    method: "POST",
-                    responseType: "blob",
-                    data: {
-                        submissionUrl: res.data.submissionBarangayProfileUrl,
-                    },
-                }).then((res) => {
-                    fileDownload(res.data, documentName);
-                    setLoadingDownload(false);
-                });
-            });
-        }
     };
 
     const downloadSketch = async () => {
@@ -615,7 +535,7 @@ function viewAll() {
                                                                         barangay.districtName
                                                                     );
                                                                     setBarangayId(
-                                                                        barangay.barangayId
+                                                                        barangay.id
                                                                     );
                                                                     setIsDropdownMenuOpen(
                                                                         false
@@ -735,7 +655,7 @@ function viewAll() {
                         )}
                 </div>
                 <div className="mt-4">
-                    {submissionBarangayProfileUrl && (
+                    {/* {submissionBarangayProfileUrl && (
                         <>
                             <SubmissionDetail
                                 title="Barangay profile"
@@ -750,7 +670,7 @@ function viewAll() {
                                 src={`${submissionBarangayProfileUrl}`}
                             ></iframe>
                         </>
-                    )}
+                    )} */}
 
                     {imageListSketch.length != 0 && (
                         <>

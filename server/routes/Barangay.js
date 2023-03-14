@@ -48,7 +48,7 @@ const getAllBarangay = async (req, res) => {
     const barangays = await Barangay.findAll({
         order: [["barangayName", "ASC"]],
         where: {
-            populationCount: {
+            userId: {
                 [Op.ne]: null,
             },
         },

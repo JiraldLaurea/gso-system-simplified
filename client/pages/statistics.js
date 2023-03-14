@@ -20,6 +20,8 @@ function statistics() {
     const [submissions, setSubmissions] = useState([]);
     const [recyclableWastes, setRecyclableWastes] = useState([]);
 
+    console.log("DDMV", dropDownMenuValue);
+
     const dispatch = useAuthDispatch();
 
     const { data: user } = useSWR("http://localhost:3001/user/me");
@@ -71,6 +73,8 @@ function statistics() {
             displayRecyclableWastes();
         }
     }, [dropDownMenuValue]);
+
+    console.log("SUBMISSIONS", submissions);
 
     return (
         <div className="">

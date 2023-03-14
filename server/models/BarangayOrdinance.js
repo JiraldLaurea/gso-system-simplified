@@ -34,6 +34,14 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.TEXT,
                 allowNull: true,
             },
+            createdAt: {
+                allowNull: true,
+                type: DataTypes.DATE,
+            },
+            updatedAt: {
+                allowNull: true,
+                type: DataTypes.DATE,
+            },
         },
         {
             freezeTableName: true,

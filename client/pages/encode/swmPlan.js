@@ -91,6 +91,8 @@ function barangayProfile({ savedData }) {
     );
 
     const resetInputs = () => {
+        setPopulationCount(0);
+
         setImageNameSketch([]);
         setImageNamePrograms([]);
         setImageNameFundingReq([]);
@@ -154,6 +156,7 @@ function barangayProfile({ savedData }) {
             imageSrcExecutiveOrder.length != 0 &&
             imageSrcBarangayOrdinance.length != 0
         ) {
+            console.log("1");
             imageSrcSketch.map(async (file, index) => {
                 const extension = file.name.substring(
                     file.name.lastIndexOf(".") + 1
@@ -191,6 +194,7 @@ function barangayProfile({ savedData }) {
                     postData
                 );
             });
+            console.log("2");
 
             imageSrcPrograms.map(async (file, index) => {
                 const extension = file.name.substring(
@@ -228,6 +232,7 @@ function barangayProfile({ savedData }) {
                     postData
                 );
             });
+            console.log("3");
 
             imageSrcFundingReq.map(async (file, index) => {
                 const extension = file.name.substring(
@@ -264,6 +269,7 @@ function barangayProfile({ savedData }) {
                     postData
                 );
             });
+            console.log("4");
 
             imageSrcMoa.map(async (file, index) => {
                 const extension = file.name.substring(
@@ -301,6 +307,7 @@ function barangayProfile({ savedData }) {
                     postData
                 );
             });
+            console.log("5");
 
             imageSrcJunkshop.map(async (file, index) => {
                 const extension = file.name.substring(
@@ -338,6 +345,7 @@ function barangayProfile({ savedData }) {
                     postData
                 );
             });
+            console.log("6");
 
             imageSrcBusinessPermit.map(async (file, index) => {
                 const extension = file.name.substring(
@@ -375,6 +383,8 @@ function barangayProfile({ savedData }) {
                     postData
                 );
             });
+
+            console.log("7");
 
             imageSrcExecutiveOrder.map(async (file, index) => {
                 const extension = file.name.substring(
@@ -414,6 +424,8 @@ function barangayProfile({ savedData }) {
                 );
             });
 
+            console.log("8");
+
             imageSrcBarangayOrdinance.map(async (file, index) => {
                 const extension = file.name.substring(
                     file.name.lastIndexOf(".") + 1
@@ -451,7 +463,9 @@ function barangayProfile({ savedData }) {
                 );
             });
 
-            const data = {
+            console.log("9");
+
+            const swmData = {
                 barangayName: dropdownMenuValueBarangay,
                 districtName: dropdownMenuValueDistrict,
                 populationCount: populationCount,
@@ -460,15 +474,18 @@ function barangayProfile({ savedData }) {
                 yearSubmitted: yearSubmitted,
             };
 
-            await Axios.post(
+            Axios.post(
                 "http://localhost:3001/submission/submitSWMPlan",
-                data
+                swmData
             );
 
+            console.log("10");
             resetInputs();
+
+            // resetInputs();
         } else {
             setIsLoading(false);
-            alert("Please fill in all the attachments.");
+            return alert("Please fill in all the attachments.");
         }
     };
 
