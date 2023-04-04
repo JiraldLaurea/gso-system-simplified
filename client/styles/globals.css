@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    th {
+        @apply border border-black;
+    }
+    td {
+        @apply border border-black;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
+@layer utilities {
+    .removeInputNumberArrows > input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        @apply appearance-none;
+    }
+}
+
+@layer components {
+    .removeBorderStyle > th,
+    .removeBorderStyle > td {
+        @apply border-0;
+    }
+}
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "Roboto Flex", "system-ui";
+}
+
+/* Chrome, Safari, Edge, Opera */
+/* input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+} */
+
+/* Firefox */
+input[type="number"] {
+    text-align: center;
+    margin: 0;
+    padding-left: 15px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+* {
+    box-sizing: border-box;
+}
