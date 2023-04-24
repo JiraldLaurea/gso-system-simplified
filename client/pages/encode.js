@@ -115,6 +115,23 @@ function encode() {
                                                     Actual wastes
                                                 </a>
                                             </li>
+                                            <li
+                                                onClick={() => {
+                                                    router.push(
+                                                        "/encode/collectionSchedule"
+                                                    );
+                                                    setIsDropdownMenuOpen(
+                                                        false
+                                                    );
+                                                }}
+                                            >
+                                                <a
+                                                    href="#"
+                                                    className="block px-3 py-2 hover:bg-gray-100"
+                                                >
+                                                    Collection Schedule
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 )}
