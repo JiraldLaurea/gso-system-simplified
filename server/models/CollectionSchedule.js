@@ -2,12 +2,16 @@ module.exports = (sequelize, DataTypes) => {
     const CollectionSchedule = sequelize.define(
         "CollectionSchedule",
         {
-            routeNum: {
-                type: DataTypes.INTEGER,
+            barangayName: {
+                type: DataTypes.STRING,
                 allowNull: false,
             },
-            barangay: {
+            districtName: {
                 type: DataTypes.STRING,
+                allowNull: false,
+            },
+            routeNum: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
             truckNum: {

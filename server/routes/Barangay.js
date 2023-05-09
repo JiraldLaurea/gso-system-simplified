@@ -47,11 +47,11 @@ router.post("/", async (req, res) => {
 const getAllBarangay = async (req, res) => {
     const barangays = await Barangay.findAll({
         order: [["barangayName", "ASC"]],
-        where: {
-            userId: {
-                [Op.ne]: null,
-            },
-        },
+        // where: {
+        //     userId: {
+        //         [Op.ne]: null,
+        //     },
+        // },
     });
     res.json(barangays);
 };

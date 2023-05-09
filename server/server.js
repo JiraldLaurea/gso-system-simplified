@@ -31,6 +31,17 @@ const concernRouter = require("./routes/Concern");
 const recyclableWastesRouter = require("./routes/RecyclableWastes");
 const actualWastesRouter = require("./routes/ActualWastes");
 const projectRouter = require("./routes/Project");
+const collectionScheduleRouter = require("./routes/CollectionSchedule");
+// Calajunan Router
+const tblCompanyRouter = require("./routes/TblCompany");
+const tblConSettingsRouter = require("./routes/TblConSettings");
+const tblCustomerRouter = require("./routes/TblCustomer");
+const tblProductsRouter = require("./routes/TblProducts");
+const tblTransactionRouter = require("./routes/TblTransaction");
+const tblTruckDetailsRouter = require("./routes/TblTruckDetails");
+const tblUserRouter = require("./routes/TblUser");
+const tblUserTypeRouter = require("./routes/TblUserType");
+const tblVehicleTypeRouter = require("./routes/TblVehicleType");
 
 const app = express();
 
@@ -99,6 +110,17 @@ app.use("/barangayOrdinance", barangayOrdinanceRouter);
 app.use("/recyclableWastes", recyclableWastesRouter);
 app.use("/actualWastes", actualWastesRouter);
 app.use("/project", projectRouter);
+app.use("/collectionSchedule", collectionScheduleRouter);
+app.use("/tblCompany", tblCompanyRouter);
+app.use("/tblConSettings", tblConSettingsRouter);
+app.use("/tblCustomer", tblCustomerRouter);
+app.use("/tblProducts", tblProductsRouter);
+app.use("/tblTransaction", tblTransactionRouter);
+// app.use("/tblTruckDetails", tblTruckDetailsRouter);
+// app.use("/tblUserType", tblUserTypeRouter);
+// app.use("/tblVehicleType", tblVehicleTypeRouter);
+
+app.use("/tblUser", tblUserRouter);
 
 db.sequelize.sync().then(() => {
     app.listen(3001, () => {

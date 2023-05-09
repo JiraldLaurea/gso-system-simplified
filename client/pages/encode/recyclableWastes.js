@@ -1,15 +1,8 @@
 import { Icon } from "@iconify/react";
 import Axios from "axios";
-import {
-    getDownloadURL,
-    ref,
-    uploadBytes,
-    uploadString,
-} from "firebase/storage";
 import React, { useEffect, useRef, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import useSWR, { mutate } from "swr";
-import { storage } from "../../firebase";
 import { useRouter } from "next/router";
 import RecyclableWastesInput from "../../components/RecyclableWastesInput";
 import moment from "moment";

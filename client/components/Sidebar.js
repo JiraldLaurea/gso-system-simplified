@@ -128,6 +128,16 @@ function Sidebar() {
                         </div>
                     )}
 
+                    {user?.isAdmin && (
+                        <div
+                            onClick={() => router.push("/importCalajunanDB")}
+                            className="flex items-center py-3 pl-6 border-gray-300 select-none hover:cursor-pointer hover:bg-gray-700"
+                        >
+                            <Icon className="w-6 h-6 mr-4" icon="fe:import" />
+                            <p>Import Calajunan DB</p>
+                        </div>
+                    )}
+
                     {!loading ? (
                         <>
                             {user?.isAdmin && (
