@@ -7,6 +7,14 @@ const { tblProducts } = require("../models");
 
 const Op = Sequelize.Op;
 
+const getAllTblProducts = async (req, res) => {
+    const tblProductsData = await tblProducts.findAll({
+        order: [["ProductID", "ASC"]],
+    });
+
+    return res.json(tblProductsData);
+};
+
 const getTblProductsId = async (req, res) => {
     const { ProductID } = req.body;
 
@@ -30,6 +38,7 @@ const postTblProducts = async (req, res) => {
     return res.json("SUCCESS");
 };
 
+router.get("/getAllTblProducts", validateUser, validate, getAllTblProducts);
 router.post("/getTblProductsId", validateUser, validate, getTblProductsId);
 router.post("/postTblProducts", validateUser, validate, postTblProducts);
 

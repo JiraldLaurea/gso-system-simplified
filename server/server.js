@@ -116,9 +116,9 @@ app.use("/tblConSettings", tblConSettingsRouter);
 app.use("/tblCustomer", tblCustomerRouter);
 app.use("/tblProducts", tblProductsRouter);
 app.use("/tblTransaction", tblTransactionRouter);
-// app.use("/tblTruckDetails", tblTruckDetailsRouter);
-// app.use("/tblUserType", tblUserTypeRouter);
-// app.use("/tblVehicleType", tblVehicleTypeRouter);
+app.use("/tblTruckDetails", tblTruckDetailsRouter);
+app.use("/tblUserType", tblUserTypeRouter);
+app.use("/tblVehicleType", tblVehicleTypeRouter);
 
 app.use("/tblUser", tblUserRouter);
 

@@ -7,6 +7,14 @@ const { tblUser } = require("../models");
 
 const Op = Sequelize.Op;
 
+const getAllTblUser = async (req, res) => {
+    const tblUserData = await tblUser.findAll({
+        order: [["user_id", "ASC"]],
+    });
+
+    return res.json(tblUserData);
+};
+
 const getTblUserId = async (req, res) => {
     const { user_id } = req.body;
 
@@ -42,6 +50,7 @@ const postTblUser = async (req, res) => {
     return res.json("SUCCESS");
 };
 
+router.get("/getAllTblUser", validateUser, validate, getAllTblUser);
 router.post("/getTblUserId", validateUser, validate, getTblUserId);
 router.post("/postTblUser", validateUser, validate, postTblUser);
 

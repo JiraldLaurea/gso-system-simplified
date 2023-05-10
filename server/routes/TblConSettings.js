@@ -7,6 +7,14 @@ const { tblConSettings } = require("../models");
 
 const Op = Sequelize.Op;
 
+const getAllTblConSettings = async (req, res) => {
+    const tblConSettingsData = await tblConSettings.findAll({
+        order: [["id", "ASC"]],
+    });
+
+    return res.json(tblConSettingsData);
+};
+
 const getTblConSettingsId = async (req, res) => {
     const { id } = req.body;
 
@@ -30,6 +38,12 @@ const postTblConSettings = async (req, res) => {
     return res.json("SUCCESS");
 };
 
+router.get(
+    "/getAllTblConSettings",
+    validateUser,
+    validate,
+    getAllTblConSettings
+);
 router.post(
     "/getTblConSettingsId",
     validateUser,

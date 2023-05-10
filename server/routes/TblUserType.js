@@ -3,46 +3,42 @@ const { validate } = require("../middleware/auth");
 const { validateUser } = require("../middleware/user");
 const router = express.Router();
 const { Sequelize } = require("../models");
-const { tblUser } = require("../models");
+const { tblUserType } = require("../models");
 
 const Op = Sequelize.Op;
 
-const getTblUserId = async (req, res) => {
-    const { user_id } = req.body;
-
-    const tblUserID = await tblUser.findOne({
-        attributes: ["user_id"],
-        where: { user_id: user_id },
+const getAllTblUserType = async (req, res) => {
+    const tblUserTypeData = await tblUserType.findAll({
+        order: [["usertype_id", "ASC"]],
     });
 
-    return res.json(tblUserID);
+    return res.json(tblUserTypeData);
 };
 
-const postTblUser = async (req, res) => {
-    const {
-        user_id,
-        usertype_id,
-        username,
-        password,
-        firstname,
-        lastname,
-        initial,
-    } = req.body;
+const getTblUserTypeId = async (req, res) => {
+    const { usertype_id } = req.body;
 
-    await tblUser.create({
-        user_id: user_id,
+    const tblUserTypeID = await tblUserType.findOne({
+        attributes: ["usertype_id"],
+        where: { usertype_id: usertype_id },
+    });
+
+    return res.json(tblUserTypeID);
+};
+
+const postTblUserType = async (req, res) => {
+    const { usertype_id, usertype } = req.body;
+
+    await tblUserType.create({
         usertype_id: usertype_id,
-        username: username,
-        password: password,
-        firstname: firstname,
-        lastname: lastname,
-        initial: initial,
+        usertype: usertype,
     });
 
     return res.json("SUCCESS");
 };
 
-router.post("/getTblUserId", validateUser, validate, getTblUserId);
-router.post("/postTblUser", validateUser, validate, postTblUser);
+router.get("/getAllTblUserType", validateUser, validate, getAllTblUserType);
+router.post("/getTblUserTypeId", validateUser, validate, getTblUserTypeId);
+router.post("/postTblUserType", validateUser, validate, postTblUserType);
 
 module.exports = router;

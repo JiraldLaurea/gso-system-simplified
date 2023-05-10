@@ -7,6 +7,14 @@ const { tblTransaction } = require("../models");
 
 const Op = Sequelize.Op;
 
+const getAllTblTransaction = async (req, res) => {
+    const tblTransactionData = await tblTransaction.findAll({
+        order: [["id", "ASC"]],
+    });
+
+    return res.json(tblTransactionData);
+};
+
 const getTblTransactionId = async (req, res) => {
     const { id } = req.body;
 
@@ -39,7 +47,7 @@ const postTblTransaction = async (req, res) => {
         note,
     } = req.body;
 
-    await tblProducts.create({
+    await tblTransaction.create({
         id: id,
         trandate: trandate,
         ticketno: ticketno,
@@ -62,6 +70,12 @@ const postTblTransaction = async (req, res) => {
     return res.json("SUCCESS");
 };
 
+router.get(
+    "/getAllTblTransaction",
+    validateUser,
+    validate,
+    getAllTblTransaction
+);
 router.post(
     "/getTblTransactionId",
     validateUser,

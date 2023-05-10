@@ -7,6 +7,7 @@ import moment from "moment";
 import { useAuthDispatch } from "../context/auth";
 import { Icon } from "@iconify/react";
 import ProjectedWastes from "../components/ProjectedWastes";
+import { useRouter } from "next/router";
 
 function statistics() {
     const [isDropdownMenuOpen, setIsDropdownMenuOpen] = useState(false);
@@ -19,6 +20,7 @@ function statistics() {
     const [toDatePicker, setToDatePicker] = useState("");
     const [submissions, setSubmissions] = useState([]);
     const [recyclableWastes, setRecyclableWastes] = useState([]);
+    const router = useRouter();
 
     const dispatch = useAuthDispatch();
 
@@ -86,132 +88,151 @@ function statistics() {
         <div className="">
             <div className="p-4 md:p-8">
                 {user?.isAdmin && (
-                    <>
+                    <div>
                         <p className="mb-1 text-sm text-gray-600">Barangay</p>
-
-                        <div className="relative mb-6">
-                            <ClickAwayListener
-                                onClickAway={() => setIsDropdownMenuOpen(false)}
-                                className="relative"
-                            >
-                                <div className="select-none w-fit">
-                                    <div
-                                        onClick={() =>
-                                            setIsDropdownMenuOpen(
-                                                !isDropdownMenuOpen
-                                            )
-                                        }
-                                        className={`flex items-center justify-between w-96 px-3 py-2 border cursor-pointer`}
-                                    >
-                                        <p
-                                            className={`${
-                                                dropdownMenuValueBarangay ==
-                                                    "Barangay" &&
-                                                dropdownMenuValueDistrict ==
-                                                    "District" &&
-                                                "text-gray-400"
-                                            }`}
+                        <div className="flex">
+                            <div className="relative mb-6">
+                                <ClickAwayListener
+                                    onClickAway={() =>
+                                        setIsDropdownMenuOpen(false)
+                                    }
+                                    className="relative"
+                                >
+                                    <div className="select-none w-fit">
+                                        <div
+                                            onClick={() =>
+                                                setIsDropdownMenuOpen(
+                                                    !isDropdownMenuOpen
+                                                )
+                                            }
+                                            className={`flex items-center justify-between w-96 px-3 py-2 border cursor-pointer`}
                                         >
-                                            {dropdownMenuValueBarangay}
-                                            {dropdownMenuValueBarangay !=
-                                                "All" && " - "}
-                                            {dropdownMenuValueDistrict}
-                                        </p>
-                                        <svg
-                                            className="w-4 h-4 ml-2"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M19 9l-7 7-7-7"
-                                            ></path>
-                                        </svg>
-                                    </div>
-                                    {isDropdownMenuOpen && (
-                                        <div className="max-h-60 overflow-y-auto absolute z-10 py-4 bg-white border border-t-0 top-[42px] w-96 dark:bg-gray-700 shadow-lg">
-                                            <ul className="text-gray-700 bg-white">
-                                                <li
-                                                    onClick={() => {
-                                                        setDropdownMenuValueBarangay(
-                                                            "All"
-                                                        );
-                                                        setDropdownMenuValueDistrict(
-                                                            ""
-                                                        );
-                                                        setIsDropdownMenuOpen(
-                                                            false
-                                                        );
-                                                        setDropDownMenuValue(
-                                                            "All"
-                                                        );
-                                                        setFromDatePicker("");
-                                                        setToDatePicker("");
-                                                    }}
-                                                >
-                                                    <a
-                                                        href="#"
-                                                        className="block px-3 py-2 hover:bg-gray-100"
-                                                    >
-                                                        All
-                                                    </a>
-                                                </li>
-                                                {barangays.map(
-                                                    (barangay, index) => {
-                                                        return (
-                                                            <li
-                                                                key={
-                                                                    barangay.id
-                                                                }
-                                                                onClick={() => {
-                                                                    setDropdownMenuValueBarangay(
-                                                                        barangay.barangayName
-                                                                    );
-                                                                    setDropdownMenuValueDistrict(
-                                                                        barangay.districtName
-                                                                    );
-                                                                    setIsDropdownMenuOpen(
-                                                                        false
-                                                                    );
-                                                                    setDropDownMenuValue(
-                                                                        barangay.id
-                                                                    );
-                                                                    setFromDatePicker(
-                                                                        ""
-                                                                    );
-                                                                    setToDatePicker(
-                                                                        ""
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <a
-                                                                    href="#"
-                                                                    className="block px-3 py-2 hover:bg-gray-100"
-                                                                >
-                                                                    {
-                                                                        barangay.barangayName
-                                                                    }
-                                                                    &nbsp; -
-                                                                    &nbsp;
-                                                                    {
-                                                                        barangay.districtName
-                                                                    }
-                                                                </a>
-                                                            </li>
-                                                        );
-                                                    }
-                                                )}
-                                            </ul>
+                                            <p
+                                                className={`${
+                                                    dropdownMenuValueBarangay ==
+                                                        "Barangay" &&
+                                                    dropdownMenuValueDistrict ==
+                                                        "District" &&
+                                                    "text-gray-400"
+                                                }`}
+                                            >
+                                                {dropdownMenuValueBarangay}
+                                                {dropdownMenuValueBarangay !=
+                                                    "All" && " - "}
+                                                {dropdownMenuValueDistrict}
+                                            </p>
+                                            <svg
+                                                className="w-4 h-4 ml-2"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth="2"
+                                                    d="M19 9l-7 7-7-7"
+                                                ></path>
+                                            </svg>
                                         </div>
-                                    )}
-                                </div>
-                            </ClickAwayListener>
+                                        {isDropdownMenuOpen && (
+                                            <div className="max-h-60 overflow-y-auto absolute z-10 py-4 bg-white border border-t-0 top-[42px] w-96 dark:bg-gray-700 shadow-lg">
+                                                <ul className="text-gray-700 bg-white">
+                                                    <li
+                                                        onClick={() => {
+                                                            setDropdownMenuValueBarangay(
+                                                                "All"
+                                                            );
+                                                            setDropdownMenuValueDistrict(
+                                                                ""
+                                                            );
+                                                            setIsDropdownMenuOpen(
+                                                                false
+                                                            );
+                                                            setDropDownMenuValue(
+                                                                "All"
+                                                            );
+                                                            setFromDatePicker(
+                                                                ""
+                                                            );
+                                                            setToDatePicker("");
+                                                        }}
+                                                    >
+                                                        <a
+                                                            href="#"
+                                                            className="block px-3 py-2 hover:bg-gray-100"
+                                                        >
+                                                            All
+                                                        </a>
+                                                    </li>
+                                                    {barangays.map(
+                                                        (barangay, index) => {
+                                                            return (
+                                                                <li
+                                                                    key={
+                                                                        barangay.id
+                                                                    }
+                                                                    onClick={() => {
+                                                                        setDropdownMenuValueBarangay(
+                                                                            barangay.barangayName
+                                                                        );
+                                                                        setDropdownMenuValueDistrict(
+                                                                            barangay.districtName
+                                                                        );
+                                                                        setIsDropdownMenuOpen(
+                                                                            false
+                                                                        );
+                                                                        setDropDownMenuValue(
+                                                                            barangay.id
+                                                                        );
+                                                                        setFromDatePicker(
+                                                                            ""
+                                                                        );
+                                                                        setToDatePicker(
+                                                                            ""
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <a
+                                                                        href="#"
+                                                                        className="block px-3 py-2 hover:bg-gray-100"
+                                                                    >
+                                                                        {
+                                                                            barangay.barangayName
+                                                                        }
+                                                                        &nbsp; -
+                                                                        &nbsp;
+                                                                        {
+                                                                            barangay.districtName
+                                                                        }
+                                                                    </a>
+                                                                </li>
+                                                            );
+                                                        }
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                </ClickAwayListener>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    router.push("/statistics/viewCalajunanDB");
+                                }}
+                                className={`px-3 ml-4 h-[42px] hover:bg-blue-600 flex items-center justify-center w-56 transition-colors py-1 text-white bg-blue-500 rounded-sm
+                    
+                     `}
+                            >
+                                <Icon
+                                    icon="ic:baseline-remove-red-eye"
+                                    className="w-6 h-6 mr-2"
+                                />
+                                View Calajunan DB
+                            </button>
                         </div>
-                    </>
+                    </div>
                 )}
 
                 <div className={`flex items-center mb-4`}>

@@ -44,7 +44,6 @@ function importCalajunanDB() {
         });
 
         promise.then((d) => {
-            alert("DONE");
             setExcelDataArray(d);
         });
     };
@@ -254,6 +253,117 @@ function importCalajunanDB() {
         });
     };
 
+    const importTblTruckDetails = async () => {
+        const promises = excelDataArray.map(async (data) => {
+            const excelData = {
+                WT_SLIP_NO: data.WT_SLIP_NO,
+                PPA: data.PPA,
+                PPA_NO: data.PPA_NO,
+                COMPANY_NAME: data.COMPANY_NAME,
+                COMPANY_ADD: data.COMPANY_ADD,
+                DTI: data.DTI,
+                DATE: data.DATE,
+                HOURS: data.HOURS,
+                VEHICLE_TYPE: data.VEHICLE_TYPE,
+                PLATE_NO: data.PLATE_NO,
+                VESSEL_NAME: data.VESSEL_NAME,
+                TRIP_NO: data.TRIP_NO,
+                SCALE_RATE: data.SCALE_RATE,
+                VAT: data.VAT,
+                AMOUNT: data.AMOUNT,
+                OR_NO: data.OR_NO,
+                AXLE1: data.AXLE1,
+                AXLE2: data.AXLE2,
+                AXLE3: data.AXLE3,
+                AXLE4: data.AXLE4,
+                AXLE5: data.AXLE5,
+                AXLE6: data.AXLE6,
+                TOTAL_WEIGHT: data.TOTAL_WEIGHT,
+                REMARKS: data.REMARKS,
+                SCALE_OPERATOR: data.SCALE_OPERATOR,
+                DATE_WEIGHTED: data.DATE_WEIGHTED,
+            };
+
+            await Axios.post(
+                "http://localhost:3001/tblTruckDetails/getTblTruckDetailsId",
+                {
+                    WT_SLIP_NO: data.WT_SLIP_NO,
+                }
+            ).then(async (res) => {
+                if (res?.data?.WT_SLIP_NO != data.WT_SLIP_NO) {
+                    await Axios.post(
+                        "http://localhost:3001/tblTruckDetails/postTblTruckDetails",
+                        excelData
+                    );
+                }
+            });
+        });
+
+        await Promise.all(promises).then(() => {
+            alert("Data successfully imported");
+            setIsLoading(false);
+        });
+    };
+
+    const importTblUserType = async () => {
+        const promises = excelDataArray.map(async (data) => {
+            const excelData = {
+                usertype_id: data.usertype_id,
+                usertype: data.usertype,
+            };
+
+            await Axios.post(
+                "http://localhost:3001/tblUserType/getTblUserTypeId",
+                {
+                    usertype_id: data.usertype_id,
+                }
+            ).then(async (res) => {
+                if (res?.data?.usertype_id != data.usertype_id) {
+                    await Axios.post(
+                        "http://localhost:3001/tblUserType/postTblUserType",
+                        excelData
+                    );
+                }
+            });
+        });
+
+        await Promise.all(promises).then(() => {
+            alert("Data successfully imported");
+            setIsLoading(false);
+        });
+    };
+
+    const importTblVehicleType = async () => {
+        const promises = excelDataArray.map(async (data) => {
+            const excelData = {
+                vid: data.vid,
+                vehicle_type: data.vehicle_type,
+                rate: data.rate,
+                vat: data.vat,
+                amount: data.amount,
+            };
+
+            await Axios.post(
+                "http://localhost:3001/tblVehicleType/getTblVehicleTypeId",
+                {
+                    vid: data.vid,
+                }
+            ).then(async (res) => {
+                if (res?.data?.vid != data.vid) {
+                    await Axios.post(
+                        "http://localhost:3001/tblVehicleType/postTblVehicleType",
+                        excelData
+                    );
+                }
+            });
+        });
+
+        await Promise.all(promises).then(() => {
+            alert("Data successfully imported");
+            setIsLoading(false);
+        });
+    };
+
     const importCalajunanDB = async () => {
         setIsLoading(true);
 
@@ -278,7 +388,7 @@ function importCalajunanDB() {
         }
 
         if (dropdownMenuValue == "tblTruckDetails") {
-            importTblUser();
+            importTblTruckDetails();
         }
 
         if (dropdownMenuValue == "tblUser") {
@@ -286,11 +396,11 @@ function importCalajunanDB() {
         }
 
         if (dropdownMenuValue == "tblUserType") {
-            importTblUser();
+            importTblUserType();
         }
 
         if (dropdownMenuValue == "tblVehicleType") {
-            importTblUser();
+            importTblVehicleType();
         }
     };
 
